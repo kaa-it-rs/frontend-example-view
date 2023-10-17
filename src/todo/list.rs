@@ -1,6 +1,7 @@
 use yew::prelude::*;
+use yew_router::prelude::*;
 
-use super::super::Todo;
+use super::super::{AppRoute, Todo};
 
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
@@ -60,7 +61,9 @@ impl List {
 
         html! {
             <div class={classes!("list-item", completed)}>
+               <Link<AppRoute> to={AppRoute::Detail { id: todo.id as i32 }}>
                 {&todo.title}
+               </Link<AppRoute>>
             </div>
         }
     }

@@ -1,12 +1,19 @@
 use serde_derive::Deserialize;
 use yew::prelude::*;
-use yew::Component;
+use yew_router::prelude::*;
 
 mod todo;
 
-pub struct TodoApp {
+#[derive(Clone, Routable, PartialEq)]
+pub enum AppRoute {
+    #[at("/todo/:id")]
+    Detail { id: i32 },
+    #[at("/")]
+    Home,
+}
+
+pub struct Home {
     todos: Option<Vec<Todo>>,
-    // fetch_task: Option<FetchTask>,
 }
 
 #[derive(Deserialize, Clone, PartialEq, Debug)]
@@ -23,7 +30,7 @@ pub enum Msg {
     Resp(anyhow::Result<Vec<Todo>>),
 }
 
-impl Component for TodoApp {
+impl Component for Home {
     type Message = Msg;
     type Properties = ();
 
@@ -83,6 +90,22 @@ impl Component for TodoApp {
                 </div>
             </div>
         }
+    }
+}
+
+fn switch(route: AppRoute) -> Html {
+    match route {
+        AppRoute::Home => html! { <Home /> },
+        AppRoute::Detail { id } => html! { <todo::detail::Detail todo_id={id} /> },
+    }
+}
+
+#[function_component(TodoApp)]
+fn app() -> Html {
+    html! {
+        <BrowserRouter>
+          <Switch<AppRoute> render={switch} />
+        </BrowserRouter>
     }
 }
 
